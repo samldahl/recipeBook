@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Recipe</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <%- include('../partials/_navbar.ejs') %>
+    <h1>Add New Recipe</h1>
+    <form action="/recipes" method="POST">
+      <div>
+        <label for="name">Recipe Name:</label>
+        <input type="text" id="name" name="name" required />
+      </div>
+      <div>
+        <label for="instructions">Instructions:</label>
+        <textarea id="instructions" name="instructions"></textarea>
+            <div>
+              <label>Ingredients:</label>
+              <div id="ingredientCheckboxes">
+                <% ingredients.forEach(ingredient => { %>
+                  <label style="display: block;">
+                    <input type="checkbox" name="ingredients" value="<%= ingredient._id %>" />
+                    <%= ingredient.name %>
+                  </label>
+                <% }); %>
+              </div>
+            </div>
+      
+            <div>
+              <h3>Add New Ingredient (Quick Add)</h3>
+              <div>
+                <input type="text" id="newIngredientName" placeholder="Enter ingredient name" />
+                <button type="button" onclick="addNewIngredient()">Add Ingredient</button>
+              </div>
+              <div id="addIngredientMessage" style="margin-top: 10px;"></div>
+            </div>
+      
+      </div>
+      <button type="submit">Create Recipe</button>
+    </form>
+    <a href="/recipes">Back to My Recipes</a>
+    
+      <script>
+        async function addNewIngredient() {
+          const ingredientName = document.getElementById('newIngredientName').value.trim();
+          const messageDiv = document.getElementById('addIngredientMessage');
+        
+          if (!ingredientName) {
+            messageDiv.innerHTML = '<p style="color: red;">Please enter an ingredient name.</p>';
+            return;
+          }
+        
+          try {
+            const response = await fetch('/ingredients', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ name: ingredientName })
+            });
+          
+            const data = await response.json();
+          
+            if (response.ok) {
+              // Add the new ingredient as a checked checkbox
+              const container = document.getElementById('ingredientCheckboxes');
+              const label = document.createElement('label');
+              label.style.display = 'block';
+
+              const checkbox = document.createElement('input');
+              checkbox.type = 'checkbox';
+              checkbox.name = 'ingredients';
+              checkbox.value = data.ingredient._id;
+              checkbox.checked = true;
+
+              label.appendChild(checkbox);
+              label.appendChild(document.createTextNode(' ' + data.ingredient.name));
+              container.appendChild(label);
+            
+              messageDiv.innerHTML = '<p style="color: green;">Ingredient added successfully!</p>';
+              document.getElementById('newIngredientName').value = '';
+            
+              setTimeout(() => {
+                messageDiv.innerHTML = '';
+              }, 3000);
+            } else {
+              messageDiv.innerHTML = '<p style="color: orange;">' + data.error + '</p>';
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            messageDiv.innerHTML = '<p style="color: red;">Failed to add ingredient. Please try again.</p>';
+          }
+        }
+      </script>
+  </body>
+</html>

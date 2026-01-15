@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CookBook</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <%- include('./partials/_navbar.ejs') %>
+    <h1>Welcome to CookBook</h1>
+    <p>Your personal recipe organizer</p>
+    <% if (!user) { %>
+      <p><a href="/auth/sign-in">Sign in</a> or <a href="/auth/sign-up">sign up</a> to get started!</p>
+    <% } else { %>
+      <p><a href="/recipes">View your recipes</a></p>
+    <% } %>
+  </body>
+</html>

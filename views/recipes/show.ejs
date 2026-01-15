@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= recipe.name %></title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <%- include('../partials/_navbar.ejs') %>
+    <h1><%= recipe.name %></h1>
+    <p><strong>Instructions:</strong> <%= recipe.instructions || 'No instructions provided' %></p>
+    
+    <% if (recipe.ingredients && recipe.ingredients.length > 0) { %>
+      <h2>Ingredients:</h2>
+      <ul>
+        <% recipe.ingredients.forEach(ingredient => { %>
+          <li><%= ingredient.name %></li>
+        <% }); %>
+      </ul>
+    <% } else { %>
+      <p>No ingredients added yet.</p>
+    <% } %>
+
+    <a href="/recipes/<%= recipe._id %>/edit">Edit</a>
+    <a href="/recipes">Back to My Recipes</a>
+  </body>
+</html>
